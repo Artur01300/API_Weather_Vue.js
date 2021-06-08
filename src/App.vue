@@ -5,12 +5,14 @@
         <input type="text" 
           class="search-bar" 
           placeholder="Chearch..."
+          v-model="query"
+          @keypress="fetchWeather"
         />
       </div>
 
-      <div class="weather-wrap">
+      <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
         <div class="location-box">
-          <div class="location"></div>
+          <div class="location">{{weather.name}}, {{weather.sys.country}}</div>
           <div class="date">Monday 20 January 2020</div>
         </div>
         <div class="weather-box">
@@ -30,11 +32,28 @@ export default {
   data (){
     return {
       api_key: '6eb1e4c44e0f04b72864db80d0f37618',
-      url_base: 'http://api.openweathermap.org/data/2.5/'
+      url_base: 'http://api.openweathermap.org/data/2.5/',
+      query: '',
+      weather: {}
+    }
+  },
+  methods: {
+    fetchWeather(e){
+      if(e.key == "Enter"){
+        fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
+        .then(res => {
+          console.log('resulta', res);
+          console.log('resulta/main', this.weather);
+          return res.json();
+        }).then(this.setResults);
+      }
+    },
+    setResults (results){
+      this.weather = results;
     }
   }
 }
-</script>{}
+</script>
 
 <style>
 *{
