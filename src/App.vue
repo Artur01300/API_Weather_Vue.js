@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''">
     <main>
       <div class="search-box">
         <input type="text" 
@@ -42,7 +42,9 @@ export default {
       if(e.key == "Enter"){
         fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
         .then(res => {
-          console.log('resulta/', );
+          if(res.status === 404){
+            alert('Nom de Pays ou de Villes incorrect');
+          }
           return res.json();
         }).then(this.setResults);
       }
@@ -82,6 +84,9 @@ export default {
   background-size: cover;
   background-position: bottom;
   transition: 0.4s;
+}
+#app.warm {
+  background-image: url('./assets/warm-bg.jpg');
 }
 
 main{
