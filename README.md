@@ -4,6 +4,7 @@
 
 ### J'utilise l'API Open Weather Map pour appeler une API reposante afin de renvoyer les données météo actuelles. Cela utilise l'API Modern Javascript Fetch ainsi que les méthodes et les conditions de Vue JS.
 
+See [Source API Météo](https://home.openweathermap.org/).
 
 ## Project setup
 ```
