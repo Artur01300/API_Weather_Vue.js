@@ -1,6 +1,8 @@
 <template>
-  <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 18 ? 'warm' : ''">
+  <div class="changeImg" :class="typeof weather.main != 'undefined' && weather.main.temp > 18 ? 'warm' : ''">
     <main>
+      <!-- primier alertOn de v-binde (v-bind:alertOn="alertOn") on a pris depuis propriété data -->
+    <alert v-bind:alertOn="alertOn" v-bind:alertOff="alertOff"></alert>
       <div class="search-box">
         <!--v-model="query":  récupère l'inpute-->
         <!--  @keypress="fetchWeather": permet d'avoir le fonction d'entrer -->
@@ -12,13 +14,6 @@
         />
       </div>
 
-        <div v-if="isAlertWindow" class="bloc-modale">
-          <div class="overlay"></div>
-          <div class="modale card">
-            <div class="btn-modale btn btn-danger"></div>
-            <h2>Le contenue de la modale</h2>
-          </div>
-        </div>
       <!-- si les données du weather.main sont manquantes on afficher ce contenue -->
       <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
         <div class="location-box">
@@ -27,18 +22,24 @@
         </div>
         <div class="weather-box">
           <div class="temp">{{Math.round(weather.main.temp)}}°c</div>
-          <div class="weather">{{weather.weather[0].main}}</div>
+          <div class="weather">{{weather.weather[0].description}}</div>
         </div>
       </div>
     </main>
-  
   </div>
 </template>
 
 <script>
 
+import ModaleAlert from './ModaleAlert'
+
 export default {
   name: 'Contenu',
+  components: {
+    // on done un nom pour l'utilisation ('alert') à partice le ModelAlert
+    'alert': ModaleAlert
+
+  },
   data (){
     return {
       //j'ajoute la clé proposé par le site de cet API (https://home.openweathermap.org/api_keys)
@@ -47,7 +48,7 @@ export default {
       url_base: 'http://api.openweathermap.org/data/2.5/',
       query: '',
       weather: {},
-      isAlertWindow: false
+      alertOn: false
     }
   },
   methods: {
@@ -58,15 +59,17 @@ export default {
       */
       if(e.key == "Enter"){
         //dans le fetch on implément l'instuction données par ce site internet: (https://openweathermap.org/current)
-        fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
+        fetch(`${this.url_base}weather?q=${this.query}&units=metric&lang=fr&APPID=${this.api_key}`)
         .then(res => {
           if(res.status === 404){
-            this.isAlertWindow = true;
-            alert('Nom de Pays ou de Villes incorrect');
+            this.alertOn = true;
           }
           return res.json();
         }).then(this.setResults);
       }
+    },
+    alertOff(){
+      this.alertOn = !this.alertOn
     },
     setResults (results){
       this.weather = results;
@@ -100,13 +103,14 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-#app{
+.changeImg{
   background-image: url('../assets/cold-bg.jpg');
   background-size: cover;
   background-position: bottom;
   transition: 0.4s;
+
 }
-#app.warm {
+.changeImg.warm {
   background-image: url('../assets/warm-bg.jpg');
 }
 

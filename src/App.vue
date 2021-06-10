@@ -8,6 +8,7 @@
 <script>
 import Contenu from './components/Contenu.vue'
 
+
 export default {
   components: { Contenu },
   name: 'App',
